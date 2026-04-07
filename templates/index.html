@@ -1,0 +1,334 @@
+{% extends "base.html" %} {% block title %}Dashboard · Expense Tracker{%
+endblock %} {% block content %}
+{% set filter_category = filter_category | default("", true) %}
+<main class="mx-auto max-w-6xl px-4 py-8">
+  <h1 class="text-3xl font-semibold mb-2">Dashboard</h1>
+  <p class="text-slate-400 mb-6">
+    Track spending, filter by date/category, and visualize instantly.
+  </p>
+
+  <!-- Filters + Add form -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- Filters -->
+    <section
+      class="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900 p-4"
+    >
+      <h2 class="text-lg font-semibold mb-3">Filters</h2>
+      <form
+        method="get"
+        action="{{ url_for('home') }}"
+        class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end pr-5"
+      >
+        <label class="text-sm">
+          <span class="block mb-1 text-slate-300">Start</span>
+          <input
+            name="start"
+            value="{{ start_str or '' }}"
+            type="date"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          />
+        </label>
+        <label class="text-sm">
+          <span class="block mb-1 text-slate-300">End</span>
+          <input
+            name="end"
+            value="{{ end_str or '' }}"
+            type="date"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          />
+        </label>
+        <label class="text-sm md:col-span-2">
+          <span class="block mb-1 text-slate-300">Category</span>
+          <select
+            name="category"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          >
+            <option value="" {% if not filter_category %}selected{% endif %}>
+              All
+            </option>
+            {% for cat in categories %}
+            <option
+              value="{{ cat }}"
+              {% if filter_category == cat %}selected{% endif %}
+            >
+              {{ cat }}
+            </option>
+            {% endfor %}
+          </select>
+        </label>
+        <div class="flex gap-2">
+          <button
+            class="rounded-xl bg-brand/20 hover:bg-brand/30 text-brand px-4 py-2 border border-brand/30"
+            type="submit"
+          >
+            Apply
+          </button>
+          <a
+            class="rounded-xl bg-slate-800 hover:bg-slate-700 px-4 py-2 border border-slate-700"
+            href="{{ url_for('home') }}"
+          >
+            Reset
+          </a>
+        </div>
+      </form>
+
+      <!-- Total -->
+      <div class="mt-4 text-sm text-slate-300">
+        <span class="mr-2">Total:</span>
+        <span
+          class="inline-block rounded-xl border border-slate-700 bg-slate-800 px-3 py-1 font-semibold"
+        >
+          ${{ "%.2f"|format(total or 0) }}
+        </span>
+      </div>
+
+      <!-- Export link -->
+      <div class="mt-3">
+        <a
+          class="text-xs text-slate-400 hover:text-brand underline"
+          href="{{ url_for('download_csv', start=start_str or '', end=end_str or '', category=filter_category or '') }}"
+        >
+          Export CSV (current filter)
+        </a>
+      </div>
+    </section>
+
+    <!-- Add Expense -->
+    <section class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <h2 class="text-lg font-semibold mb-3">Add Expense</h2>
+      <form method="post" action="{{ url_for('add') }}" class="space-y-3">
+        <label class="block text-sm">
+          <span class="mb-1 block text-slate-300">Description</span>
+          <input
+            name="description"
+            placeholder="e.g., Groceries"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          />
+        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block text-sm">
+            <span class="mb-1 block text-slate-300">Amount</span>
+            <input
+              name="amount"
+              type="number"
+              step="0.01"
+              min="0.01"
+              placeholder="25.00"
+              class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+            />
+          </label>
+          <label class="block text-sm">
+            <span class="mb-1 block text-slate-300">Date</span>
+            <input
+              name="date"
+              type="date"
+              class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+            />
+          </label>
+        </div>
+        <label class="block text-sm">
+          <span class="mb-1 block text-slate-300">Category</span>
+          <select
+            name="category"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          >
+            {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button
+          class="w-full rounded-xl bg-brand/20 hover:bg-brand/30 text-brand px-4 py-2 border border-brand/30"
+          type="submit"
+        >
+          Add Expense
+        </button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Total (global) -->
+  <div class="mb-3 mt-6">
+    <span class="text-sm text-slate-300 mr-2">Total:</span>
+    <span
+      class="inline-block rounded-xl border border-slate-700 bg-slate-800 px-3 py-1 font-semibold"
+    >
+      ${{ "%.2f"|format(total or 0) }}
+    </span>
+  </div>
+
+  <!-- Expenses table -->
+  <section class="rounded-2xl border border-slate-800 bg-slate-900">
+    <div class="px-4 py-3 border-b border-slate-800">
+      <h2 class="text-lg font-semibold">Expenses</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-slate-300 bg-slate-800/50">
+          <tr>
+            <th class="text-left px-4 py-3">Date</th>
+            <th class="text-left px-4 py-3">Description</th>
+            <th class="text-left px-4 py-3">Category</th>
+            <th class="text-right px-4 py-3">Amount</th>
+            <th class="px-4 py-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if expenses %} {% for e in expenses %}
+          <tr class="border-t border-slate-800">
+            <td class="px-4 py-2">{{ e.date }}</td>
+            <td class="px-4 py-2">{{ e.description }}</td>
+            <td class="px-4 py-2">{{ e.category }}</td>
+            <td class="px-4 py-2 text-right">${{ "%.2f"|format(e.amount) }}</td>
+            <td class="px-4 py-2 text-right">
+              <div class="flex items-center justify-end gap-3">
+                <a
+                  href="{{ url_for('edit', expense_id=e.id) }}"
+                  class="text-slate-400 hover:text-brand"
+                  title="Edit"
+                  aria-label="Edit expense"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16.862 3.487a2.02 2.02 0 0 1 2.858 2.858L8.5 17.565 5 18.5l.935-3.5 10.927-11.513Z"
+                    />
+                  </svg>
+                </a>
+                <form
+                  method="post"
+                  action="{{ url_for('delete', expense_id=e.id) }}"
+                  class="inline-block"
+                >
+                  <button
+                    type="submit"
+                    class="text-slate-400 hover:text-rose-400"
+                    title="Delete"
+                    aria-label="Delete expense"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %} {% else %}
+          <tr>
+            <td colspan="5" class="px-4 py-6 text-center text-slate-400">
+              No expenses yet — add your first one above.
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <h3 class="font-semibold mb-2">By Category</h3>
+      <canvas id="catChart" height="140"></canvas>
+    </div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <h3 class="font-semibold mb-2">Spending Over Time</h3>
+      <canvas id="dayChart" height="140"></canvas>
+    </div>
+  </section>
+</main>
+{% endblock %} {% block body_end %} {{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const catLabels = {{ (cat_labels or []) | tojson }};
+  const catValues = {{ (cat_values or []) | tojson }};
+
+  const pieColors = [
+    "#38bdf8", "#a78bfa", "#34d399", "#fbbf24", "#fb7185",
+    "#94a3b8", "#f472b6", "#2dd4bf",
+  ];
+
+  if (document.getElementById("catChart") && catLabels.length) {
+    const catCtx = document.getElementById("catChart").getContext("2d");
+    new Chart(catCtx, {
+      type: "pie",
+      data: {
+        labels: catLabels,
+        datasets: [
+          {
+            label: "Amount",
+            data: catValues,
+            backgroundColor: catLabels.map(
+              (_, i) => pieColors[i % pieColors.length]
+            ),
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: "#cbd5e1" } },
+        },
+      },
+    });
+  }
+
+  const dayLabels = {{ (day_labels or []) | tojson }};
+  const dayValues = {{ (day_values or []) | tojson }};
+
+  if (document.getElementById("dayChart") && dayLabels.length) {
+    const dayCtx = document.getElementById("dayChart").getContext("2d");
+    new Chart(dayCtx, {
+      type: "line",
+      data: {
+        labels: dayLabels,
+        datasets: [
+          {
+            label: "Spending ($)",
+            data: dayValues,
+            borderColor: "#38bdf8",
+            backgroundColor: "rgba(56, 189, 248, 0.12)",
+            fill: true,
+            tension: 0.25,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            ticks: { color: "#94a3b8", maxRotation: 45 },
+            grid: { color: "rgba(148, 163, 184, 0.12)" },
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: "#94a3b8" },
+            grid: { color: "rgba(148, 163, 184, 0.12)" },
+          },
+        },
+        plugins: {
+          legend: { labels: { color: "#cbd5e1" } },
+        },
+      },
+    });
+  }
+</script>
+{% endblock %}

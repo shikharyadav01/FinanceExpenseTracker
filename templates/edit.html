@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block title %}Edit Expense · Expense Tracker
+Lite{% endblock %} {% block content %}
+<main class="mx-auto max-w-6xl px-4 py-8">
+  <h1 class="text-3xl font-semibold mb-2">Edit Expense</h1>
+  <p class="text-slate-400 mb-6">Update the details and save your changes.</p>
+
+  <section class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+    <form
+      method="post"
+      action="{{ url_for('edit', expense_id=expense.id) }}"
+      class="space-y-3"
+    >
+      <label class="block text-sm">
+        <span class="mb-1 block text-slate-300">Description</span>
+        <input
+          name="description"
+          value="{{ expense.description }}"
+          placeholder="e.g., Groceries"
+          class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+        />
+      </label>
+
+      <div class="grid grid-cols-2 gap-3">
+        <label class="block text-sm">
+          <span class="mb-1 block text-slate-300">Amount</span>
+          <input
+            name="amount"
+            type="number"
+            step="0.01"
+            min="0.01"
+            value="{{ "%.2f"|format(expense.amount) }}"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          />
+        </label>
+
+        <label class="block text-sm">
+          <span class="mb-1 block text-slate-300">Date</span>
+          <input
+            name="date"
+            type="date"
+            value="{{ expense.date }}"
+            class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+          />
+        </label>
+      </div>
+
+      <label class="block text-sm">
+        <span class="mb-1 block text-slate-300">Category</span>
+        <select
+          name="category"
+          class="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100"
+        >
+          {% for cat in categories %}
+          <option
+            value="{{ cat }}"
+            {% if expense.category == cat %}selected{% endif %}
+          >
+            {{ cat }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <div class="flex gap-3 pt-2">
+        <button
+          class="flex-1 rounded-xl bg-brand/20 hover:bg-brand/30 text-brand px-4 py-2 border border-brand/30"
+          type="submit"
+        >
+          Save Changes
+        </button>
+        <a
+          href="{{ url_for('home') }}"
+          class="flex-1 rounded-xl bg-slate-800 hover:bg-slate-700 px-4 py-2 border border-slate-700 text-center"
+        >
+          Cancel
+        </a>
+      </div>
+    </form>
+  </section>
+</main>
+{% endblock %}
+
