@@ -164,6 +164,16 @@ python app.py
 
 ---
 
+
+---Screenshots----
+
+
+<img width="1920" height="1080" alt="Screenshot (47)" src="https://github.com/user-attachments/assets/3ff9e7fb-e293-46b0-b25a-238a1032c321" />
+<img width="1920" height="1080" alt="Screenshot (48)" src="https://github.com/user-attachments/assets/462b3ee3-5f05-4759-be94-f375cb396823" />
+<img width="1920" height="1080" alt="Screenshot (49)" src="https://github.com/user-attachments/assets/5aaf0066-6091-4844-b81e-3f85dc51b215" />
+
+
+
 ## 🚀 Future Improvements
 
 * User authentication (login/signup)
