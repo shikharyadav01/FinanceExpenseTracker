@@ -1,75 +1,200 @@
-# FinanceExpenseTracker
-📊 Expense Tracker (Flask)
+# 💰 AI-Powered Expense Tracker
 
-A simple and user-friendly Expense Tracker web application built using Flask.
-This project helps users manage their daily expenses, track spending habits, and visualize financial data efficiently.
+An intelligent Expense Tracker web application built using Flask, enhanced with AI and Machine Learning features to help users track, analyze, and understand their spending habits.
 
-🚀 Features
-➕ Add, edit, and delete expenses
-📂 Categorize expenses (Food, Travel, Bills, etc.)
-📅 Track expenses by date
-📊 Interactive dashboard with charts
-💾 Data stored using SQLite database
-🌐 Clean and responsive user interface
-🛠️ Tech Stack
-Backend: Flask
-Frontend: HTML, CSS, JavaScript
-Database: SQLite
-Visualization: Chart.js
-📁 Project Structure
+---
+
+## 🚀 Features
+
+### 🧾 Core Features
+
+* ➕ Add, edit, and delete expenses
+* 📂 Categorize expenses (Food, Transport, Rent, Utilities, etc.)
+* 📅 Filter expenses by date and category
+* 📊 Interactive dashboard with charts
+* 💾 Data stored using SQLite
+* 📥 Export filtered data to CSV
+
+---
+
+### 🤖 AI Features
+
+* 🧠 **Smart Expense Categorization**
+  Automatically classifies expenses based on description using AI (Gemini API + fallback logic)
+
+* 📊 **AI Spending Insights**
+  Generates insights like:
+
+  * "You spent 45% on Food"
+  * Helps users understand spending patterns
+
+* 📈 **Expense Prediction (Machine Learning)**
+  Predicts future expenses using Linear Regression
+
+* 💬 **AI Chat Assistant**
+  Ask questions like:
+
+  * "How much did I spend on food?"
+  * "What is my highest expense?"
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+
+* Python
+* Flask
+* SQLAlchemy
+
+### Frontend
+
+* HTML
+* Tailwind CSS
+* JavaScript
+* Chart.js
+
+### AI & ML
+
+* Google Gemini API
+* Scikit-learn (Linear Regression)
+
+### Database
+
+* SQLite
+
+---
+
+## 📁 Project Structure
+
+```
 expense-tracker/
 │
-├── app.py                # Main Flask application
-├── templates/           # HTML templates
-├── static/              # CSS, JS files
-├── database.db          # SQLite database
-└── requirements.txt     # Dependencies
-⚙️ Installation & Setup
-1. Clone the repository
+├── app.py
+├── ai/
+│   ├── gemini.py
+│   ├── insights.py
+│
+├── ml_model.py
+├── templates/
+│   ├── base.html
+│   ├── index.html
+│   ├── edit.html
+│
+├── static/
+├── requirements.txt
+└── .env
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone Repository
+
+```
 git clone https://github.com/your-username/expense-tracker.git
 cd expense-tracker
-2. Create virtual environment
+```
+
+### 2. Create Virtual Environment
+
+```
 python -m venv venv
-3. Activate environment
+```
+
+### 3. Activate Environment
+
+```
 venv\Scripts\activate
-4. Install dependencies
+```
+
+### 4. Install Dependencies
+
+```
 pip install -r requirements.txt
-5. Run the app
+```
+
+### 5. Setup Environment Variables
+
+Create a `.env` file:
+
+```
+GEMINI_API_KEY=your_api_key_here
+```
+
+### 6. Run the App
+
+```
 python app.py
-📊 How It Works
-Users enter expense details (amount, category, date)
-Data is stored in SQLite database
-Expenses are displayed in dashboard
-Charts provide visual insights of spending patterns
-🎯 Use Case
-Personal finance management
-Tracking daily/monthly expenses
-Understanding spending habits
-📌 Future Improvements
-User authentication (login/signup)
-Export data to CSV
-Monthly budget tracking
-Cloud database integration
-🤝 Contributing
+```
 
-Contributions are welcome! Feel free to fork the repository and submit a pull request.
+---
 
-📜 License
+## 📊 How It Works
 
-This project is open-source and available under the MIT License.
+1. User adds expense
+2. AI categorizes expense automatically
+3. Data is stored in database
+4. Dashboard updates with:
 
-⭐ Support
+   * Charts
+   * AI insights
+   * Predictions
+5. User can query data using AI chatbot
 
-If you found this project helpful, please give it a ⭐ on GitHub!
+---
 
-💡 PRO TIP (IMPORTANT for placement)
+## 🎯 Use Cases
 
-When you upload this:
+* Personal finance management
+* Budget tracking
+* Spending analysis
+* Learning full-stack + AI integration
 
-Add screenshots (very important)
-Add a demo GIF if possible
-Keep README clean like above
+---
 
-If you want next:
-👉 I can write AI-integrated version README (stronger for placement)
-👉 Or help you push this project to GitHub step-by-step
+## 🔥 Highlights
+
+* Real-world full-stack project
+* AI + ML integration
+* Production-level architecture
+* Clean UI with Tailwind
+* Scalable design
+
+---
+
+## 🚀 Future Improvements
+
+* User authentication (login/signup)
+* Cloud database (PostgreSQL)
+* Budget alerts & notifications
+* Voice-based expense input
+* Mobile app version
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to fork and submit a pull request.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+## ⭐ Support
+
+If you found this project useful, give it a ⭐ on GitHub!
+
+---
+
+## 👨‍💻 Author
+
+**Shikhar Yadav**
+CSE Data Science Student
+
+---
